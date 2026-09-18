@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dsh-creator",
+  "version": "0.1.0",
+  "description": "Creation and setup skills for DeepSeek Harness: project init, skill/command/agent creation, plugin validation, MCP and LSP onboarding.",
+  "author": { "name": "dsh-agent-plugins contributors" },
+  "license": "MIT",
+  "keywords": ["dsh", "creator", "init", "skills", "mcp", "lsp"],
+  "extensions": {
+    "com.deepseek.harness": {
+      "schemaVersion": "1.0.0"
+    }
+  }
+}

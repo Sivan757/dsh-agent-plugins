@@ -1,0 +1,34 @@
+# AGENTS.md
+
+Repository guidance for maintaining the dsh-agent-plugins suite collection.
+
+## What this repository is
+
+First-party suite collection for dsh-agent-plugins-market. `plugins/<name>/` directories are Agent Plugins v1 suites; the market scans this repository, lists the suites, and mounts their surfaces into sessions. Nothing here runs at market-install time except skill and command content delivered to the model.
+
+## Suite contract (Agent Plugins v1)
+
+- Root `plugin.json` declares `$schema` with a supported release (`1.0.0`/`1.1.0`), `name` (kebab-case, 1–64 chars), `version`, `description`, `author`, `license`.
+- The `com.deepseek.harness` extension namespace is opt-in: declare it under `extensions["com.deepseek.harness"].schemaVersion` or the namespace directory is ignored with a scan note.
+- Skills: `skills/<name>/SKILL.md`, one level deep, no deeper discovery.
+- Portable `mcp.json`: `$schema` + `mcpServers` top-level keys only; every server carries `type`; placeholders limited to `${PLUGIN_ROOT}` and `${PLUGIN_DATA}`; credential references fail closed here by design.
+- Namespace surfaces under `com.deepseek.harness/`: `commands/*.md` (frontmatter `description`, optional `argument-hint`), `agents/*.md` (frontmatter `name`, `description`, optional `model`/`provider`/`reasoningEffort`/`disabled`), `hooks/hooks.json` (Claude Code event-table shape), `lsp.json` (`lspServers` table; `command` + `extensionToLanguage` required).
+
+## Authoring rules
+
+- Skill `description` lines decide model triggering: third person, concrete trigger phrases, one to three sentences.
+- Skill and command bodies are imperative and self-contained; an agent that has never seen this conversation must be able to follow them.
+- Interactive steps go through the `ask_user_question` tool, described in the body as explicit steps.
+- Every file a skill body references must exist inside the same suite; reference them relative to the skill directory.
+- No credentials, tokens, or machine-specific paths in any shipped text.
+
+## Validation
+
+Validate a suite before committing changes to it: load it through the market (local source pointing at this checkout) and confirm the surfaces count on the suite detail page, or run the validator skill (`dsh-creator` → plugin-validate) against the directory.
+
+## Repository rules
+
+- Stage changes by path; do not use `git add -A`.
+- Version bumps live only in each suite's `plugin.json` (`version` field, semver).
+- Bilingual user-facing surfaces: `README.md` and `README.zh-CN.md` ship as one edit; suite content (skills, commands, agent cards) is English — it is read by the model.
+- `skill-creator/` keeps its upstream Apache-2.0 license file; do not fold it into the repository MIT license.
