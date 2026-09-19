@@ -23,7 +23,7 @@ Explore the repository before asking anything the code can answer:
 
 1. Read `package.json` / `pyproject.toml` / `go.mod` / `Cargo.toml` / `pom.xml` (whichever exist), README files, Makefile / justfile / task runners, and CI configuration.
 2. Detect: build, lint, test, and single-test commands; language and package manager; monorepo layout; formatter config.
-3. Read existing instruction files: nested `AGENTS.md` files, `CLAUDE.md`, `.cursor/rules`, `.github/copilot-instructions.md`, `CONTRIBUTING.md`. Record their content so the generated file can reference rather than duplicate them.
+3. Read the instruction files the repository already carries — nested `AGENTS.md`, assistant or editor rule files, `CONTRIBUTING.md` — and record their content so the generated file can reference rather than duplicate them.
 4. Note every question the code cannot answer (team conventions, release process, branch policy) as an interview question for Phase 3.
 
 ## Phase 3 — Interview
