@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dsh-essentials",
+  "version": "0.1.0",
+  "description": "Everyday capabilities for DeepSeek Harness sessions: codebase exploration, runtime verification, session insight reports, and README generation.",
+  "author": { "name": "dsh-agent-plugins contributors" },
+  "license": "MIT",
+  "keywords": ["dsh", "explore", "verify", "insight", "readme"],
+  "extensions": {
+    "com.deepseek.harness": {
+      "schemaVersion": "1.0.0"
+    }
+  }
+}

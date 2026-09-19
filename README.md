@@ -9,6 +9,7 @@ The repository serves as the market's built-in demo source: it exercises every s
 | Suite | Surfaces | Contents |
 | --- | --- | --- |
 | [dsh-creator](plugins/dsh-creator/) | skills, commands, agents | Project init, skill/command/agent creation with frontmatter verification, plugin validation, MCP and LSP onboarding, the bundled skill-creator |
+| [dsh-essentials](plugins/dsh-essentials/) | skills, commands, agents | Everyday capabilities: codebase exploration, runtime verification, session insight reports, README generation, plus the explorer and architect agent roles |
 | [dsh-review](plugins/dsh-review/) | skills | Simplify: a three-reviewer parallel pass over the current diff that applies cleanup fixes |
 
 ## Installing
@@ -17,7 +18,7 @@ Add this repository as a source in the dsh-agent-plugins-market page, then insta
 
 1. Open the market page in the DeepSeek Harness web UI.
 2. Add source with this repository's git URL.
-3. Install `dsh-creator` or `dsh-review`; mounted surfaces appear on the next discovery pass.
+3. Install `dsh-creator`, `dsh-essentials` or `dsh-review`; mounted surfaces appear on the next discovery pass.
 
 ## Repository rules
 

@@ -9,6 +9,7 @@
 | 套件 | 面 | 内容 |
 | --- | --- | --- |
 | [dsh-creator](plugins/dsh-creator/) | skills、commands、agents | 项目初始化、技能/命令/代理创建与 frontmatter 校验、插件校验、MCP 与 LSP 接入、收编的 skill-creator |
+| [dsh-essentials](plugins/dsh-essentials/) | skills、commands、agents | 日常能力：代码库探索、运行时验证、会话回顾报告、README 生成，以及 explorer 与 architect 两个代理角色 |
 | [dsh-review](plugins/dsh-review/) | skills | simplify：对当前变更做三审查代理并行清理并应用修复 |
 
 ## 安装
@@ -17,7 +18,7 @@
 
 1. 打开 DeepSeek Harness Web 界面的市场页。
 2. 用本仓库的 git URL 添加源。
-3. 安装 `dsh-creator` 或 `dsh-review`；挂载的面在下一轮发现时出现。
+3. 安装 `dsh-creator`、`dsh-essentials` 或 `dsh-review`；挂载的面在下一轮发现时出现。
 
 ## 仓库规则
 
