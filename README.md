@@ -22,7 +22,7 @@ Add this repository as a source in the dsh-agent-plugins-market page, then insta
 ## Repository rules
 
 - `plugins/<name>/` is the suite: the directory itself is what the market installs, and it is authored by hand.
-- `plugin.json` follows the Agent Plugins v1 schema (`$schema` names the release); the `com.deepseek.harness` namespace is declared in `extensions` and only then is the namespace directory read.
+- `plugin.json` follows the Agent Plugins v1 schema (`$schema` names the release); the `com.deepseek.harness` namespace is declared in `extensions` and only then is the namespace directory read — see [the namespace guide](docs/com-deepseek-harness-namespace.md).
 - Skills live at `skills/<name>/SKILL.md` — one level deep, exactly as the specification fixes discovery.
 - Namespaced extension surfaces: `com.deepseek.harness/commands/*.md`, `com.deepseek.harness/agents/*.md`, `com.deepseek.harness/hooks/hooks.json`, `com.deepseek.harness/lsp.json`.
 - Credentials are never written as literal values; user-owned `~/.agents/mcp.json` entries reference credentials as `${NAME}`.

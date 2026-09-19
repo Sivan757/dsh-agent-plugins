@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dsh-agent-plugins",
+  "description": "First-party Agent Plugins v1 suites for dsh-agent-plugins-market: creation, init and review skills for DeepSeek Harness.",
+  "owner": { "name": "dsh-agent-plugins contributors" },
+  "metadata": {
+    "description": "First-party Agent Plugins v1 suites for dsh-agent-plugins-market: creation, init and review skills for DeepSeek Harness.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "dsh-creator",
+      "version": "0.1.0",
+      "source": "./plugins/dsh-creator",
+      "description": "Creation and setup skills for DeepSeek Harness: project init, skill/command/agent creation, plugin validation, MCP and LSP onboarding.",
+      "keywords": ["dsh", "creator", "init", "skills", "mcp", "lsp"],
+      "category": "productivity"
+    },
+    {
+      "name": "dsh-review",
+      "version": "0.1.0",
+      "source": "./plugins/dsh-review",
+      "description": "Review workflows for DeepSeek Harness: parallel simplify review of the current diff with three focused reviewers.",
+      "keywords": ["dsh", "review", "simplify", "refactor"],
+      "category": "productivity"
+    }
+  ]
+}
