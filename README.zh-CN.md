@@ -2,7 +2,7 @@
 
 [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plugins-market) 的第一方套件集合。market 是 DeepSeek Harness 的插件，负责按原样安装 agent-plugin 套件。`plugins/` 下每个目录都符合 [Agent Plugins v1 规范](https://agent-plugins.org/specification)：根 `plugin.json`、`skills/` 技能、`mcp.json` MCP 服务器，以及 DeepSeek Harness 专属面（命令、代理角色、hooks、LSP 声明）放在 `com.deepseek.harness/` 扩展命名空间。
 
-本仓库同时是 market 的内置演示源：它覆盖 market 挂载的每一类面，其中的套件都是普通的可安装单元——在市场页浏览、安装、启用、停用，与第三方套件没有区别。
+本仓库是这些套件的创作地，market 插件预置了一条指向本仓库的来源记录——全新安装即可在市场里看到这个集合，不需要任何人粘贴地址。
 
 ## 套件
 
@@ -14,11 +14,7 @@
 
 ## 安装
 
-在 dsh-agent-plugins-market 页面把本仓库添加为源，然后安装套件：
-
-1. 打开 DeepSeek Harness Web 界面的市场页。
-2. 用本仓库的 git URL 添加源。
-3. 安装 `dsh-creator`、`dsh-essentials` 或 `dsh-review`；挂载的面在下一轮发现时出现。
+安装 [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plugins-market) 即可：market 已预置指向本仓库的来源记录，刷新该来源即可拉取套件并安装。手动把本仓库添加为来源同样可行——开发中的套件走这条路，或用于记录已被删除的 market。
 
 ## 仓库规则
 

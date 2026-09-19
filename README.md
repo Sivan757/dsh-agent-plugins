@@ -2,7 +2,7 @@
 
 First-party suite collection for [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plugins-market), the DeepSeek Harness plugin that installs agent-plugin suites in place. Every directory under `plugins/` conforms to the [Agent Plugins v1 specification](https://agent-plugins.org/specification): a root `plugin.json`, skills under `skills/`, MCP servers in `mcp.json`, and DeepSeek Harness-specific surfaces (commands, agent roles, hooks, LSP declarations) under the `com.deepseek.harness/` extension namespace.
 
-The repository serves as the market's built-in demo source: it exercises every surface the market mounts, and its suites are ordinary installable units — browse the market page, install, enable, disable like any third-party suite.
+The repository is the authoring home for these suites, and the market plugin ships a pre-registered source record pointing at it — a fresh install lists this collection without anyone pasting a URL.
 
 ## Suites
 
@@ -14,11 +14,7 @@ The repository serves as the market's built-in demo source: it exercises every s
 
 ## Installing
 
-Add this repository as a source in the dsh-agent-plugins-market page, then install suites from it:
-
-1. Open the market page in the DeepSeek Harness web UI.
-2. Add source with this repository's git URL.
-3. Install `dsh-creator`, `dsh-essentials` or `dsh-review`; mounted surfaces appear on the next discovery pass.
+Installing [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plugins-market) is enough: the market presets a source record for this repository, so refresh that source to fetch the suites and install from there. Adding this repository as a source by hand works too — the path for a suite under development, or for a market whose record was removed.
 
 ## Repository rules
 

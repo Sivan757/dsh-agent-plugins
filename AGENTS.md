@@ -26,6 +26,10 @@ First-party suite collection for dsh-agent-plugins-market. `plugins/<name>/` dir
 
 Validate a suite before committing changes to it: load it through the market (local source pointing at this checkout) or run the scan verifier from the market checkout (`node scripts/verify-dsh-agent-plugins-scan.mjs` after `pnpm run build` there), and confirm the surfaces count and empty errors. The repository carries no catalog manifest — discovery walks `plugins/` and reads each suite's root `plugin.json` (Agent Plugins v1 defines no marketplace format).
 
+## Distribution
+
+This repository is the authoring home for the suites; dsh-agent-plugins-market ships a source record pointing at it and the user refreshes that source to fetch them. A suite change therefore lands here and nowhere else — no copy is vendored into the market package, and no sync step exists.
+
 ## Repository rules
 
 - Stage changes by path; do not use `git add -A`.
