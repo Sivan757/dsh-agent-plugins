@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score skill triggering from DSH subagent session logs.
 
-DSH does not need (and must not use) `claude -p`. A skill load is an ordinary
+DSH never shells out to another agent runtime. A skill load is an ordinary
 tool call recorded in the subagent's persisted session log:
 
     {"type": "tool/call", "data": {"name": "skill",

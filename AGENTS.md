@@ -12,7 +12,7 @@ First-party suite collection for dsh-agent-plugins-market. `plugins/<name>/` dir
 - The `com.deepseek.harness` extension namespace is opt-in: declare it under `extensions["com.deepseek.harness"].schemaVersion` or the namespace directory is ignored with a scan note.
 - Skills: `skills/<name>/SKILL.md`, one level deep, no deeper discovery.
 - Portable `mcp.json`: `$schema` + `mcpServers` top-level keys only; every server carries `type`; placeholders limited to `${PLUGIN_ROOT}` and `${PLUGIN_DATA}`; credential references fail closed here by design.
-- Namespace surfaces under `com.deepseek.harness/`: `commands/*.md` (frontmatter `description`, optional `argument-hint`), `agents/*.md` (frontmatter `name`, `description`, optional `model`/`provider`/`reasoningEffort`/`disabled`), `hooks/hooks.json` (Claude Code event-table shape), `lsp.json` (`lspServers` table; `command` + `extensionToLanguage` required).
+- Namespace surfaces under `com.deepseek.harness/`: `commands/*.md` (frontmatter `description`, optional `argument-hint`), `agents/*.md` (frontmatter `name`, `description`, optional `model`/`provider`/`reasoningEffort`/`disabled`), `hooks/hooks.json` (event table), `lsp.json` (`lspServers` table; `command` + `extensionToLanguage` required).
 
 ## Authoring rules
 

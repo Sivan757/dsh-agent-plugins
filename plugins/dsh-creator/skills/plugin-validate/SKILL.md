@@ -12,7 +12,6 @@ Check one suite directory and report every problem with its fix. Read-only: neve
 Accept a directory path from the user; otherwise ask. Confirm the shape:
 
 - `plugin.json` at the directory root (Agent Plugins v1), or
-- `.claude-plugin/plugin.json` (Claude Code layout), or
 - a skill collection without a manifest.
 
 ## Step 2 — Manifest checks (v1)

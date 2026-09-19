@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Build the description-improvement prompt, and record the candidate it yields.
 
-The original version of this script called `claude -p` to rewrite the
-description. A Python process cannot spawn DSH subagents, and shelling out to
-`claude -p` measures a different runtime (and often just hangs), so the two
+A Python process cannot spawn DSH subagents, and shelling out to another
+agent runtime measures a different platform (and often just hangs), so the two
 halves are split:
 
   * `prompt`  — assembles the improvement prompt from a score report. The agent

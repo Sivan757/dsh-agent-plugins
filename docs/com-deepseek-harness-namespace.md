@@ -30,7 +30,7 @@ my-suite/
 └── com.deepseek.harness/
     ├── commands/*.md             # slash commands
     ├── agents/*.md               # agent role cards
-    ├── hooks/hooks.json          # command hooks, Claude Code event-table shape
+    ├── hooks/hooks.json          # command hooks (event table)
     └── lsp.json                  # LSP server declarations
 ```
 
@@ -54,7 +54,7 @@ Frontmatter: `name` (kebab-case, 3–50 chars), `description` (when to delegate)
 
 ### Hooks — `com.deepseek.harness/hooks/hooks.json`
 
-Claude Code event-table shape. Recognized events: `PreToolUse`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`, `Stop`, `SubagentStart`, `SubagentStop`. Values expand `${PLUGIN_ROOT}` (suite install directory) and `${PLUGIN_DATA}` (per-suite persistent data directory).
+Event table keyed by lifecycle event names. Recognized events: `PreToolUse`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`, `Stop`, `SubagentStart`, `SubagentStop`. Values expand `${PLUGIN_ROOT}` (suite install directory) and `${PLUGIN_DATA}` (per-suite persistent data directory).
 
 ```json
 {
