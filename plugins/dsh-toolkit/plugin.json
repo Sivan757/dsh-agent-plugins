@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dsh-toolkit",
+  "version": "0.1.0",
+  "description": "Authoring and everyday workflows for DeepSeek Harness: creators for plugins, skills, commands, agent roles, hooks, MCP servers and LSP declarations, plus project init, exploration, verification, README writing, simplification and session insight reports.",
+  "author": { "name": "dsh-agent-plugins contributors" },
+  "license": "MIT",
+  "keywords": ["dsh", "creator", "plugin", "skill", "command", "agent", "hook", "mcp", "lsp", "init", "explore", "verify", "insight", "simplify"],
+  "extensions": {
+    "com.deepseek.harness": {
+      "schemaVersion": "1.0.0"
+    }
+  }
+}
