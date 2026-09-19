@@ -24,7 +24,7 @@ First-party suite collection for dsh-agent-plugins-market. `plugins/<name>/` dir
 
 ## Validation
 
-Validate a suite before committing changes to it: load it through the market (local source pointing at this checkout) or run the scan verifier from the market checkout (`node scripts/verify-dsh-agent-plugins-scan.mjs` after `pnpm run build` there), and confirm the surfaces count and empty errors. The `.claude-plugin/marketplace.json` catalog must list every directory under `plugins/`; its entry versions must match each suite's `plugin.json` version.
+Validate a suite before committing changes to it: load it through the market (local source pointing at this checkout) or run the scan verifier from the market checkout (`node scripts/verify-dsh-agent-plugins-scan.mjs` after `pnpm run build` there), and confirm the surfaces count and empty errors. The repository carries no catalog manifest — discovery walks `plugins/` and reads each suite's root `plugin.json` (Agent Plugins v1 defines no marketplace format).
 
 ## Repository rules
 
