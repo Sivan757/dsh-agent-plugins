@@ -9,13 +9,14 @@ The repository is the authoring home for these plugins, and the market plugin sh
 | Group | Assets |
 | --- | --- |
 | Creation | `create-plugin`, `create-skill`, `create-command`, `create-agent`, `create-hook`, `create-mcp`, `create-lsp` |
-| Validation | `validate-plugin` |
+| Evaluation | `eval-plugin` |
 | Project | `init-project`, `create-readme` |
-| Every day | `explore`, `verify`, `insight`, `simplify` |
+| Every day | `explore`, `verify`, `simplify`, `batch`, `insight` |
+| Validation | `validate-plugin` |
 | Commands | `/init`, `/explore`, `/verify` |
 | Agent roles | `explorer`, `architect`, `asset-validator` |
 
-Every asset kind a plugin can carry has a creation skill: a plugin, a skill, a slash command, an agent role, a hook, an MCP server, an LSP declaration. `create-plugin` builds the directory and walks the surfaces; each surface skill writes its own files; `validate-plugin` checks the result against the specification.
+Every asset kind a plugin can carry has a creation skill: a plugin, a skill, a slash command, an agent role, a hook, an MCP server, an LSP declaration. `create-plugin` builds the directory and walks the surfaces; each surface skill writes its own files; `validate-plugin` checks the result against the specification. `eval-plugin` measures the result: eval cases, graders, repeated runs, and a no-plugin baseline.
 
 ## Installing
 

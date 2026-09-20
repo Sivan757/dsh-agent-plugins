@@ -7,7 +7,7 @@ description: Create new skills, modify and improve existing skills, and measure 
 
 Create new skills and iteratively improve them.
 
-Skill triggering is measured by observing subagents in their real runtime and reading their session logs.
+This copy runs natively on DeepSeek Harness. Skill triggering is measured by observing subagents in their real runtime and reading their session logs.
 
 At a high level, the process of creating a skill goes like this:
 
@@ -29,9 +29,11 @@ Of course, you should always be flexible and if the user is like "I don't need t
 
 Then after the skill is done (but again, the order is flexible), you can also run the description optimization loop to improve the skill's triggering.
 
+Cool? Cool.
+
 ## Communicating with the user
 
-The skill creator is liable to be used by people across a wide range of familiarity with coding jargon. The bulk of users are probably fairly computer-literate, and some are opening a terminal for the first time; phrase the instructions so both can follow them.
+The skill creator is liable to be used by people across a wide range of familiarity with coding jargon. The bulk of users are probably fairly computer-literate, and some are opening a terminal for the first time.
 
 So please pay attention to context cues to understand how to phrase your communication! In the default case, just to give you some idea:
 
@@ -63,12 +65,10 @@ Check available MCPs - if useful for research (searching docs, finding similar s
 
 Based on the user interview, fill in these components:
 
-- **name**: the skill identifier — lowercase kebab-case, identical to the directory name
+- **name**: Skill identifier
 - **description**: When to trigger, what it does. This is the primary triggering mechanism - include both what the skill does AND specific contexts for when to use it. All "when to use" info goes here, not in the body. Note: models have a tendency to "undertrigger" skills -- to not use them when they'd be useful. To combat this, please make the skill descriptions a little bit "pushy". So for instance, instead of "How to build a simple fast dashboard to display internal metrics.", you might write "How to build a simple fast dashboard to display internal metrics. Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics, or wants to display any kind of company data, even if they don't explicitly ask for a 'dashboard.'"
 - **compatibility**: Required tools, dependencies (optional, rarely needed)
 - **the rest of the skill :)**
-
-The skill goes to `.agents/skills/<name>/SKILL.md` in the project or `~/.agents/skills/<name>/SKILL.md` for the user; ask which scope when it is ambiguous, and default to the project.
 
 ### Skill Writing Guide
 
@@ -140,15 +140,15 @@ Output: feat(auth): implement JWT-based authentication
 
 Try to explain to the model why things are important in lieu of heavy-handed musty MUSTs. Use theory of mind and try to make the skill general and not super-narrow to specific examples. Start by writing a draft and then look at it with fresh eyes and improve it.
 
-### Check the draft
+### Description quality review
 
-Fix every failure on this list before measuring anything:
+Before measuring anything, review the description against this checklist and fix what fails:
 
-1. The frontmatter parses as YAML and carries `name` and `description`.
-2. The directory name matches the `name` field.
-3. The `description` names the concrete phrases that should activate the skill.
-4. Every file the body references exists inside the skill directory.
-5. No credentials, tokens, or machine-specific paths in the text.
+- **Trigger phrases**: does it include the specific phrases users would actually say?
+- **Third person**: "This skill should be used when..." rather than "Load this skill when..."
+- **Specificity**: concrete scenarios, not vague categories
+- **Length**: not too short (under 50 characters), not too long (over 500)
+- **Anti-undertriggering**: the "pushy" wording from the frontmatter guidance — name the contexts that should trigger it even when the user doesn't name the skill
 
 ### Test Cases
 
@@ -378,7 +378,7 @@ This step matters — bad eval queries lead to bad descriptions.
 
 ### Step 3: Run the optimization loop
 
-**Read triggering from the session log.** A skill load is an ordinary tool call — `{"type":"tool/call","data":{"name":"skill","arguments":"{\"name\":\"<skill>\"}"}}` — recorded in the subagent's persisted session log. Triggering is *observed*, not asked for.
+**Measure triggering from the session log.** A skill load is an ordinary tool call — `{"type":"tool/call","data":{"name":"skill","arguments":"{\"name\":\"<skill>\"}"}}` — recorded in the subagent's persisted session log. Triggering is *observed*, not asked for.
 
 Only you can spawn subagents, so you drive the loop and the scripts keep score. Run them as modules from this skill's directory.
 

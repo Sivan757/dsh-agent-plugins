@@ -22,6 +22,7 @@ First-party plugin collection for dsh-agent-plugins-market. `plugins/<name>/` di
 
 ## Authoring rules
 
+- Ported content keeps its source text as the base; adaptation is mechanical only — tool names, file names, paths, and vendor wording. Do not rewrite structure or drop sections while porting.
 - Skill `description` lines decide model triggering: third person, concrete trigger phrases, one to three sentences.
 - Skill and command bodies are imperative and self-contained; an agent that has never seen this conversation must be able to follow them.
 - Interactive steps go through the `ask_user_question` tool, described in the body as explicit steps.

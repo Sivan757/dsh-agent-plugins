@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Build the description-improvement prompt, and record the candidate it yields.
 
-A Python process cannot spawn DSH subagents, and shelling out to another
-agent runtime measures a different platform (and often just hangs), so the two
-halves are split:
+A Python process cannot spawn subagents, so the two halves are split:
 
   * `prompt`  — assembles the improvement prompt from a score report. The agent
                 reads it and produces the candidate. No LLM call happens here.

@@ -9,13 +9,14 @@
 | 分组 | 资产 |
 | --- | --- |
 | 创建 | `create-plugin`、`create-skill`、`create-command`、`create-agent`、`create-hook`、`create-mcp`、`create-lsp` |
-| 校验 | `validate-plugin` |
+| 评估 | `eval-plugin` |
 | 项目 | `init-project`、`create-readme` |
-| 日常 | `explore`、`verify`、`insight`、`simplify` |
+| 日常 | `explore`、`verify`、`simplify`、`batch`、`insight` |
+| 校验 | `validate-plugin` |
 | 命令 | `/init`、`/explore`、`/verify` |
 | 代理角色 | `explorer`、`architect`、`asset-validator` |
 
-插件能承载的每一种资产都有对应的创建技能：插件、技能、斜杠命令、代理角色、hook、MCP 服务器、LSP 声明。`create-plugin` 建目录并规划各个面，每个面的技能写自己的文件，`validate-plugin` 按规范校验结果。
+插件能承载的每一种资产都有对应的创建技能：插件、技能、斜杠命令、代理角色、hook、MCP 服务器、LSP 声明。`create-plugin` 建目录并规划各个面，每个面的技能写自己的文件，`validate-plugin` 按规范校验结果。`eval-plugin` 度量结果：评估用例、评分器、多次运行与无插件基线。
 
 ## 安装
 

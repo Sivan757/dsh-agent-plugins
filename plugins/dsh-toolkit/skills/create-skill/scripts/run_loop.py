@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Track a description-optimization loop that the agent drives.
 
-A Python process cannot spawn subagents, and shelling out to another agent
-runtime measures a different platform (and frequently just hangs). So the loop
-is split:
+A Python process cannot spawn subagents, so the loop is split:
 
   * the agent spawns one subagent per query and binds the session ids
     (`run_eval.py bind`), then scores the round (`run_eval.py score`);

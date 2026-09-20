@@ -1,7 +1,11 @@
 ---
-description: Verify a change by running the application and observing its behavior
-argument-hint: [what changed]
+description: Verify that a code change actually does what it's supposed to by running the app and observing behavior
+argument-hint: [what to verify]
 ---
-Verify this change by running the application: $ARGUMENTS
+Verify this change by running the application.
 
-Follow the verify skill: establish the full diff range, find the surface where the change is observable, launch the application, drive the changed code path, and capture the evidence. Do not substitute tests or typechecks for running it. Report the verdict (PASS / FAIL / BLOCKED) with the steps and captures.
+## User Request
+
+$ARGUMENTS
+
+Follow the verify skill exactly: establish the full diff range first, find the surface where the change is observable, get a handle, drive the changed code path, and capture the evidence. Do not run tests or typechecks as a substitute — that is CI's output. Report the verdict (PASS / FAIL / BLOCKED) inline with the steps and captures, and when in doubt, FAIL.

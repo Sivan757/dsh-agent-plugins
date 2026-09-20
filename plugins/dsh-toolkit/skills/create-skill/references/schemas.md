@@ -225,7 +225,7 @@ Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
   "metadata": {
     "skill_name": "pdf",
     "skill_path": "/path/to/pdf",
-    "executor_model": "session-model-id",
+    "executor_model": "most-capable-model",
     "analyzer_model": "most-capable-model",
     "timestamp": "2026-01-15T10:30:00Z",
     "evals_run": [1, 2, 3],

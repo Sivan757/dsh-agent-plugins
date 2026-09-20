@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Score skill triggering from DSH subagent session logs.
 
-DSH never shells out to another agent runtime. A skill load is an ordinary
-tool call recorded in the subagent's persisted session log:
+A skill load is an ordinary tool call recorded in the subagent's persisted
+session log:
 
     {"type": "tool/call", "data": {"name": "skill",
                                    "arguments": "{\\"name\\":\\"my-skill\\"}"}}
