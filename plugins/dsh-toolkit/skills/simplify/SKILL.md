@@ -49,6 +49,6 @@ Review the same changes for efficiency:
 
 ## Phase 3: Fix Issues
 
-Wait for all three agents to complete. Aggregate their findings and fix each issue directly. If a finding is a false positive or not worth addressing, note it and move on — do not argue with the finding, just skip it.
+Wait for all three agents to complete. Aggregate their findings, then delegate the refinement pass to the `code-simplifier` agent with `subagent_run`, handing it the findings list plus the diff. The code-simplifier agent applies the fixes: it simplifies and refines the changed code for clarity, consistency, and maintainability while preserving all functionality, and skips anything that would change behavior. Apply any finding the agent cannot handle directly. If a finding is a false positive or not worth addressing, note it and move on — do not argue with the finding, just skip it.
 
 When done, briefly summarize what was fixed (or confirm the code was already clean).

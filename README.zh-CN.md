@@ -4,19 +4,26 @@
 
 本仓库是这些插件的创作地，market 插件预置了一条指向本仓库的来源记录——全新安装即可在市场里看到这个集合，不需要任何人粘贴地址。
 
-## dsh-toolkit
+## 插件
 
-| 分组 | 资产 |
+### dsh-plugin-dev — 创作工具集
+
+移植自参考生态的插件开发工具集，并融合技能创建器与评估套件。
+
+| 面 | 资产 |
 | --- | --- |
-| 创建 | `create-plugin`、`create-skill`、`create-command`、`create-agent`、`create-hook`、`create-mcp`、`create-lsp` |
-| 评估 | `eval-plugin` |
-| 项目 | `init-project`、`create-readme` |
-| 日常 | `explore`、`verify`、`simplify`、`batch`、`insight` |
-| 校验 | `validate-plugin` |
-| 命令 | `/init`、`/explore`、`/verify` |
-| 代理角色 | `explorer`、`architect`、`asset-validator` |
+| 技能 | `plugin-structure`、`agent-development`、`command-development`、`hook-development`、`mcp-integration`、`plugin-settings` |
+| 创建 + 评估 | `skill-creator`（创建、改进、基准测试与触发优化）、`plugin-evals`（评估套件：评分器与无插件基线） |
+| 命令 | `/create-plugin` |
+| 代理角色 | `agent-creator`、`plugin-validator`、`skill-reviewer` |
 
-插件能承载的每一种资产都有对应的创建技能：插件、技能、斜杠命令、代理角色、hook、MCP 服务器、LSP 声明。`create-plugin` 建目录并规划各个面，每个面的技能写自己的文件，`validate-plugin` 按规范校验结果。`eval-plugin` 度量结果：评估用例、评分器、多次运行与无插件基线。
+### dsh-toolkit — 内置工具集
+
+| 面 | 资产 |
+| --- | --- |
+| 技能 | `init-project`（AGENTS.md / AGENTS.local.md 初始化）、`explore`（只读代码库探索）、`verify`（运行时验证）、`simplify`（审查与清理，修复阶段交给 code-simplifier 代理）、`insight`（会话洞察报告，由 dsh-session-insights 管线驱动） |
+| 命令 | `/init`、`/explore`、`/verify`、`/code-reviewer` |
+| 代理角色 | `code-reviewer`（规范、缺陷、质量——带置信度评分）、`code-simplifier`（保持行为不变的精简） |
 
 ## 安装
 
@@ -28,8 +35,9 @@
 - `plugin.json` 遵循 Agent Plugins v1 schema（`$schema` 指明版本）；`com.deepseek.harness` 命名空间在 `extensions` 里声明后，命名空间目录才会被读取——见[命名空间指南](docs/com-deepseek-harness-namespace.md)。
 - 技能位于 `skills/<name>/SKILL.md`——一层深度，与规范固定的发现规则一致。
 - 命名空间扩展面：`com.deepseek.harness/commands/*.md`、`com.deepseek.harness/agents/*.md`、`com.deepseek.harness/hooks/hooks.json`、`com.deepseek.harness/lsp.json`。
+- 移植内容以上游原文为基底；适配仅限机械映射——工具名、文件名、路径、厂商字样。
 - 凭证绝不写成字面值；用户级 `~/.agents/mcp.json` 条目用 `${NAME}` 引用凭证。
 
 ## 许可
 
-[MIT](LICENSE)。内置的 `create-skill` 技能自带 [Apache-2.0 许可](plugins/dsh-toolkit/skills/create-skill/LICENSE.txt)。
+[MIT](LICENSE)。`plugins/dsh-plugin-dev` 移植的内容以 Apache-2.0 分发——[LICENSE](plugins/dsh-plugin-dev/LICENSE) 随插件保留，内置的 `skill-creator` 技能保留[自己的副本](plugins/dsh-plugin-dev/skills/skill-creator/LICENSE.txt)。

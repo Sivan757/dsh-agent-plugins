@@ -6,6 +6,11 @@ Repository guidance for maintaining the dsh-agent-plugins plugin collection.
 
 First-party plugin collection for dsh-agent-plugins-market. `plugins/<name>/` directories are Agent Plugins v1 plugins; the market scans this repository, lists each one as an installable suite, and mounts its surfaces into sessions. Nothing here runs at market-install time except skill and command content delivered to the model.
 
+Two plugins, two goals:
+
+- `dsh-plugin-dev` — the authoring toolkit for people building plugins (structure guidance, component development skills, the skill creator with its evaluation tooling, plugin eval suites, the guided create-plugin command, and the reviewer agents).
+- `dsh-toolkit` — the built-in toolset for user projects (project init, exploration, verification, simplification, session insights, code review).
+
 ## Plugin contract (Agent Plugins v1)
 
 - Root `plugin.json` declares `$schema` with a supported release (`1.0.0`/`1.1.0`), `name` (kebab-case, 1–64 chars, equal to the directory name), `version`, `description`, `author`, `license`.
@@ -16,13 +21,13 @@ First-party plugin collection for dsh-agent-plugins-market. `plugins/<name>/` di
 
 ## Naming
 
-- Every asset kind a plugin can carry has exactly one creator, named `create-<thing>`: `create-plugin`, `create-skill`, `create-command`, `create-agent`, `create-hook`, `create-mcp`, `create-lsp`.
-- Names are lowercase kebab-case, at most two components, and a skill's directory name equals its frontmatter `name`.
-- A creator writes the files it owns and defers the rest to the sibling creators.
+- Ported skills keep their source names (`plugin-structure`, `skill-creator`, …); a skill's directory name equals its frontmatter `name`.
+- Names are lowercase kebab-case, at most two components.
 
 ## Authoring rules
 
 - Ported content keeps its source text as the base; adaptation is mechanical only — tool names, file names, paths, and vendor wording. Do not rewrite structure or drop sections while porting.
+- Adaptation mappings: `Agent`/`Task` → `subagent_run`, `Skill` → `skill`, `AskUserQuestion` → `ask_user_question`, `TodoWrite` → `todo_write`, `CLAUDE.md` → `AGENTS.md`, `${CLAUDE_PLUGIN_ROOT}` → `${PLUGIN_ROOT}`, `.claude/` → `.agents/`, `.claude-plugin/plugin.json` → `plugin.json`, `commands/`+`agents/`+`hooks/` → `com.deepseek.harness/…`, `.mcp.json` → `mcp.json`; hook events are the seven the host bridge supports (`SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Stop`, `SubagentStart`, `SubagentStop`); model shorthand (`sonnet`/`haiku`/`opus`) is replaced by `inherit` or an exact `provider` + `model` pair.
 - Skill `description` lines decide model triggering: third person, concrete trigger phrases, one to three sentences.
 - Skill and command bodies are imperative and self-contained; an agent that has never seen this conversation must be able to follow them.
 - Interactive steps go through the `ask_user_question` tool, described in the body as explicit steps.
@@ -42,4 +47,4 @@ This repository is the authoring home for the plugins; dsh-agent-plugins-market 
 - Stage changes by path; do not use `git add -A`.
 - Version bumps live only in each plugin's `plugin.json` (`version` field, semver).
 - Bilingual user-facing surfaces: `README.md` and `README.zh-CN.md` ship as one edit; plugin content (skills, commands, agent cards) is English — it is read by the model.
-- `skills/create-skill/` keeps its upstream Apache-2.0 license file; do not fold it into the repository MIT license.
+- `plugins/dsh-plugin-dev` keeps the Apache-2.0 license of the content it ports; do not fold it into the repository MIT license. The bundled `skill-creator` skill keeps its own license copy.
