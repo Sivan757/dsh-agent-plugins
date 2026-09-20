@@ -6,7 +6,7 @@ The repository is the authoring home for these plugins, and the market plugin sh
 
 ## Plugins
 
-### dsh-plugin-dev — authoring toolkit
+### plugin-dev — authoring toolkit
 
 Ported and adapted from the plugin-development toolkit of the reference ecosystem, with the skill creator and eval suites fused in.
 
@@ -17,7 +17,7 @@ Ported and adapted from the plugin-development toolkit of the reference ecosyste
 | Commands | `/create-plugin` |
 | Agent roles | `agent-creator`, `plugin-validator`, `skill-reviewer` |
 
-### dsh-toolkit — built-in toolset
+### toolkit — built-in toolset
 
 | Surface | Assets |
 | --- | --- |
@@ -40,4 +40,4 @@ Installing [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plug
 
 ## License
 
-[MIT](LICENSE). `plugins/dsh-plugin-dev` ports content distributed under the Apache-2.0 license — its [LICENSE](plugins/dsh-plugin-dev/LICENSE) travels with the plugin, and the bundled `skill-creator` skill keeps [its own copy](plugins/dsh-plugin-dev/skills/skill-creator/LICENSE.txt).
+[MIT](LICENSE). `plugins/plugin-dev` ports content distributed under the Apache-2.0 license — its [LICENSE](plugins/plugin-dev/LICENSE) travels with the plugin, and the bundled `skill-creator` skill keeps [its own copy](plugins/plugin-dev/skills/skill-creator/LICENSE.txt).

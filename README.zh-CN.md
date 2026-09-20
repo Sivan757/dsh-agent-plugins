@@ -6,7 +6,7 @@
 
 ## 插件
 
-### dsh-plugin-dev — 创作工具集
+### plugin-dev — 创作工具集
 
 移植自参考生态的插件开发工具集，并融合技能创建器与评估套件。
 
@@ -17,7 +17,7 @@
 | 命令 | `/create-plugin` |
 | 代理角色 | `agent-creator`、`plugin-validator`、`skill-reviewer` |
 
-### dsh-toolkit — 内置工具集
+### toolkit — 内置工具集
 
 | 面 | 资产 |
 | --- | --- |
@@ -40,4 +40,4 @@
 
 ## 许可
 
-[MIT](LICENSE)。`plugins/dsh-plugin-dev` 移植的内容以 Apache-2.0 分发——[LICENSE](plugins/dsh-plugin-dev/LICENSE) 随插件保留，内置的 `skill-creator` 技能保留[自己的副本](plugins/dsh-plugin-dev/skills/skill-creator/LICENSE.txt)。
+[MIT](LICENSE)。`plugins/plugin-dev` 移植的内容以 Apache-2.0 分发——[LICENSE](plugins/plugin-dev/LICENSE) 随插件保留，内置的 `skill-creator` 技能保留[自己的副本](plugins/plugin-dev/skills/skill-creator/LICENSE.txt)。

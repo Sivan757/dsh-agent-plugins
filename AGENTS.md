@@ -8,8 +8,8 @@ First-party plugin collection for dsh-agent-plugins-market. `plugins/<name>/` di
 
 Two plugins, two goals:
 
-- `dsh-plugin-dev` — the authoring toolkit for people building plugins (structure guidance, component development skills, the skill creator with its evaluation tooling, plugin eval suites, the guided create-plugin command, and the reviewer agents).
-- `dsh-toolkit` — the built-in toolset for user projects (project init, exploration, verification, simplification, session insights, code review).
+- `plugin-dev` — the authoring toolkit for people building plugins (structure guidance, component development skills, the skill creator with its evaluation tooling, plugin eval suites, the guided create-plugin command, and the reviewer agents).
+- `toolkit` — the built-in toolset for user projects (project init, exploration, verification, simplification, session insights, code review).
 
 ## Plugin contract (Agent Plugins v1)
 
@@ -47,4 +47,4 @@ This repository is the authoring home for the plugins; dsh-agent-plugins-market 
 - Stage changes by path; do not use `git add -A`.
 - Version bumps live only in each plugin's `plugin.json` (`version` field, semver).
 - Bilingual user-facing surfaces: `README.md` and `README.zh-CN.md` ship as one edit; plugin content (skills, commands, agent cards) is English — it is read by the model.
-- `plugins/dsh-plugin-dev` keeps the Apache-2.0 license of the content it ports; do not fold it into the repository MIT license. The bundled `skill-creator` skill keeps its own license copy.
+- `plugins/plugin-dev` keeps the Apache-2.0 license of the content it ports; do not fold it into the repository MIT license. The bundled `skill-creator` skill keeps its own license copy.
