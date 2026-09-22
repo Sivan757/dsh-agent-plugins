@@ -1,6 +1,6 @@
 ---
 description: Verify that a code change actually does what it's supposed to by running the app and observing behavior
-argument-hint: [what to verify]
+argument-hint: "[what to verify]"
 ---
 Verify this change by running the application.
 

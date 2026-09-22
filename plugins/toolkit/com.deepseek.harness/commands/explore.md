@@ -1,6 +1,6 @@
 ---
 description: Explore this codebase and report where something lives or how a flow works
-argument-hint: [question] [quick|medium|very thorough]
+argument-hint: "[question] [quick|medium|very thorough]"
 ---
 Explore this codebase and answer: $ARGUMENTS
 

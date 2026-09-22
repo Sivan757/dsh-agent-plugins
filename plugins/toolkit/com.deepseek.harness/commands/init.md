@@ -1,6 +1,6 @@
 ---
 description: Set up a minimal AGENTS.md (and optionally skills and hooks) for this repo
-argument-hint: [--local | --skills | --hooks]
+argument-hint: "[--local] [--skills] [--hooks]"
 ---
 Run the init-project skill's phases in order for this repository.
 
