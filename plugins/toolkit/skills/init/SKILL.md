@@ -1,6 +1,6 @@
 ---
-name: init-project
-description: Set up a minimal AGENTS.md (and optionally skills and hooks) for this repo. Use when the user asks to "initialize the project", "generate AGENTS.md", "set up project instructions", or runs /init-project.
+name: init
+description: Set up a minimal AGENTS.md (and optionally skills and hooks) for this repo. Use when the user asks to "initialize the project", "generate AGENTS.md", "set up project instructions", or runs /init.
 ---
 
 Set up a minimal AGENTS.md (and optionally skills and hooks) for this repo. AGENTS.md is loaded into every session, so it must be concise — only include what the agent would get wrong without it.
@@ -11,7 +11,7 @@ When the invocation names `--local`, `--skills` or `--hooks`, preselect the matc
 
 Use `ask_user_question` to find out what the user wants:
 
-- "Which AGENTS.md files should /init-project set up?"
+- "Which AGENTS.md files should /init set up?"
   Options: "Project AGENTS.md" | "Personal AGENTS.local.md" | "Both project + personal"
   Description for project: "Team-shared instructions checked into source control — architecture, coding standards, common workflows."
   Description for personal: "Your private preferences for this project (gitignored, not shared) — your role, sandbox URLs, preferred test data, workflow quirks."
@@ -169,7 +169,7 @@ For each hook preference (from the queue or the formatter fallback):
 
 ## Phase 8: Summary and next steps
 
-Recap what was set up — which files were written and the key points included in each. Remind the user these files are a starting point: they should review and tweak them, and can run `/init-project` again anytime to re-scan.
+Recap what was set up — which files were written and the key points included in each. Remind the user these files are a starting point: they should review and tweak them, and can run `/init` again anytime to re-scan.
 
 Then suggest a few additional optimizations for this codebase and agent setup based on what you found. Present these as a single, well-formatted to-do list where every item is relevant to this repo. Put the most impactful items first.
 

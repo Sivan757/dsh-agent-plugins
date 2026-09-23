@@ -23,11 +23,11 @@
 
 | 面 | 资产 |
 | --- | --- |
-| 技能 | `init-project`、`explore`、`verify`、`simplify`、`insight`、`agents-md-audit`（按质量标准审计并改进 AGENTS.md）、`automation-recommender`（读代码库，推荐它需要的 hooks、技能、代理与 MCP 服务器） |
+| 技能 | `init`、`explore`、`verify`、`simplify`、`insight`、`agents-md-audit`（按质量标准审计并改进 AGENTS.md）、`automation-recommender`（读代码库，推荐它需要的 hooks、技能、代理与 MCP 服务器） |
 | 命令 | `/code-reviewer`、`/revise-agents-md` |
 | 代理角色 | `code-reviewer`、`code-simplifier` |
 
-技能不需要另配命令：每个技能本身就是以自己名字命名的斜杠入口，`/init-project`、`/explore`、`/verify`、`/simplify`、`/insight`、`/agents-md-audit`、`/automation-recommender` 都直接调用该技能。上面两条命令之所以单独存在，是因为它们做了单个技能做不到的事——`/code-reviewer` 对当前变更调度两个审查代理，`/revise-agents-md` 把本次会话的经验落成 AGENTS.md 的补充。
+技能不需要另配命令：每个技能本身就是以自己名字命名的斜杠入口，`/init`、`/explore`、`/verify`、`/simplify`、`/insight`、`/agents-md-audit`、`/automation-recommender` 都直接调用该技能。上面两条命令之所以单独存在，是因为它们做了单个技能做不到的事——`/code-reviewer` 对当前变更调度两个审查代理，`/revise-agents-md` 把本次会话的经验落成 AGENTS.md 的补充。
 
 ### `engineering` — 工程工作流
 
