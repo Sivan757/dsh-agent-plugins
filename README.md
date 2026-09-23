@@ -24,8 +24,10 @@ Everyday capabilities for a project session. 7 skills, 5 commands, 2 agent roles
 | Surface | Assets |
 | --- | --- |
 | Skills | `init-project`, `explore`, `verify`, `simplify`, `insight`, `agents-md-audit` (audit and improve AGENTS.md against quality criteria), `automation-recommender` (read a codebase and recommend the hooks, skills, agents and MCP servers it needs) |
-| Commands | `/init`, `/explore`, `/verify`, `/code-reviewer`, `/revise-agents-md` |
+| Commands | `/code-reviewer`, `/revise-agents-md` |
 | Agent roles | `code-reviewer`, `code-simplifier` |
+
+A skill needs no separate command: each one is already a slash entry under its own name, so `/init-project`, `/explore`, `/verify`, `/simplify`, `/insight`, `/agents-md-audit` and `/automation-recommender` all invoke the skill directly. The two commands above exist because they do something a single skill cannot — `/code-reviewer` orchestrates two review agents over the current diff, and `/revise-agents-md` turns this session's learnings into AGENTS.md additions.
 
 ### `engineering` — engineering workflows
 

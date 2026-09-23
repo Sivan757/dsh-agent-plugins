@@ -19,7 +19,7 @@ You are STRICTLY PROHIBITED from:
 
 ## Call shape
 
-The caller names a thoroughness level, which sets how far to search before answering:
+The invocation carries the question to answer, optionally followed by a thoroughness word. The thoroughness level sets how far to search before answering:
 
 - **quick** for basic searches
 - **medium** for moderate exploration
