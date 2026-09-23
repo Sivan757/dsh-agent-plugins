@@ -110,4 +110,4 @@ Client policy keyed by the server's own `mcp.json` name; the portable file stays
 
 ## Worked example
 
-The [plugin-dev plugin](https://github.com/Sivan757/dsh-agent-plugins/tree/main/plugins/plugin-dev) declares the namespace and ships one command and three agent roles; the [toolkit plugin](https://github.com/Sivan757/dsh-agent-plugins/tree/main/plugins/toolkit) ships four commands and two agent roles — the [dsh-agent-plugins](https://github.com/Sivan757/dsh-agent-plugins) repository doubles as the reference implementation.
+The [plugin-dev plugin](https://github.com/Sivan757/dsh-agent-plugins/tree/main/plugins/plugin-dev) declares the namespace and ships one command and three agent roles; the [toolkit plugin](https://github.com/Sivan757/dsh-agent-plugins/tree/main/plugins/toolkit) ships five commands and two agent roles; the [engineering plugin](https://github.com/Sivan757/dsh-agent-plugins/tree/main/plugins/engineering) ships eleven commands and twelve agent roles, and drives its workflow scripts through `${PLUGIN_ROOT}` — the [dsh-agent-plugins](https://github.com/Sivan757/dsh-agent-plugins) repository doubles as the reference implementation.

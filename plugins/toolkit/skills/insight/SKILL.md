@@ -42,17 +42,21 @@ For each batch id, in order:
 
 Process batches serially — no subagents for this stage.
 
+Alongside the facets, read the spend signals the evidence carries and keep them per batch: token usage in and out, cache reads against fresh input, how much of the work ran in subagents, and the single most expensive request. Attribute each to the task family it belongs to, so the aggregate can name the workflow that costs the most rather than only the session totals.
+
 ## Stage 3 — Aggregate the narrative
 
 After every batch passes, call `session_insights_get_aggregate`. It validates the submitted facets and returns the bounded aggregate prompt plus its output contract. Write the narrative against the contract's sections:
 
-- **Glance** — the window, the session count, and the two or three findings that matter.
-- **Workflows** — the repeated workflows, with the evidence behind each.
+- **Glance** — the window, the session count, and the two or three findings that matter. Lead with a spend number when one dominates: a project or workflow taking a disproportionate share of the total, a cache-hit rate well below what the work should allow, or one request accounting for a noticeable slice of the window.
+- **Workflows** — the repeated workflows, with the evidence behind each, and what each costs.
 - **Operating style** — how the user actually works, in second person, with specific examples.
 - **Strengths** — what works, with the receipts.
-- **Frictions** — each pattern: what happened, how often, in which sessions, and the concrete cause visible in the evidence.
+- **Frictions** — each pattern: what happened, how often, in which sessions, and the concrete cause visible in the evidence. A spend anomaly belongs here when it has a cause you can name — a workflow that fans out more subagents than the task needs, a prompt that re-reads what is already in context, a cache that keeps breaking.
 - **Recommendations** — a short list of changes to try, each tied to one friction pattern, each phrased as something the user can do in a session. Prioritize instructions the user repeated across multiple sessions — they should not have to repeat themselves.
 - **Horizon** — what to try next.
+
+Every spend figure you cite names the sessions behind it, and a figure you inferred rather than read is labelled as an inference.
 
 Submit with `session_insights_submit_aggregate`.
 

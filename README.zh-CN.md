@@ -6,9 +6,9 @@
 
 ## 插件
 
-### plugin-dev — 创作工具集
+### `plugin-dev` — 创作工具集
 
-移植自参考生态的插件开发工具集，并融合技能创建器与评估套件。
+移植自参考生态的插件开发工具集，并融合技能创建器与评估套件。8 个技能、1 条命令、3 个代理角色。
 
 | 面 | 资产 |
 | --- | --- |
@@ -17,13 +17,26 @@
 | 命令 | `/create-plugin` |
 | 代理角色 | `agent-creator`、`plugin-validator`、`skill-reviewer` |
 
-### toolkit — 内置工具集
+### `toolkit` — 内置工具集
+
+项目会话的日常能力。7 个技能、5 条命令、2 个代理角色。
 
 | 面 | 资产 |
 | --- | --- |
-| 技能 | `init-project`（AGENTS.md / AGENTS.local.md 初始化）、`explore`（只读代码库探索）、`verify`（运行时验证）、`simplify`（审查与清理，修复阶段交给 code-simplifier 代理）、`insight`（会话洞察报告，由 dsh-session-insights 管线驱动） |
-| 命令 | `/init`、`/explore`、`/verify`、`/code-reviewer` |
-| 代理角色 | `code-reviewer`（规范、缺陷、质量——带置信度评分）、`code-simplifier`（保持行为不变的精简） |
+| 技能 | `init-project`、`explore`、`verify`、`simplify`、`insight`、`agents-md-audit`（按质量标准审计并改进 AGENTS.md）、`automation-recommender`（读代码库，推荐它需要的 hooks、技能、代理与 MCP 服务器） |
+| 命令 | `/init`、`/explore`、`/verify`、`/code-reviewer`、`/revise-agents-md` |
+| 代理角色 | `code-reviewer`、`code-simplifier` |
+
+### `engineering` — 工程工作流
+
+面向系统开发与改造的工作流。2 个技能、11 条命令、12 个代理角色，以及它们驱动的工作流脚本。
+
+| 面 | 资产 |
+| --- | --- |
+| 技能 | `playground`（自包含的交互式 HTML 探索页）、`frontend-design`（视觉设计取向） |
+| 特性开发 | `/feature-dev` 搭配 `code-explorer`、`code-architect`、`code-reviewer` 三个代理角色 |
+| 遗留系统改造 | `/modernize-preflight`、`/modernize-assess`、`/modernize-map`、`/modernize-extract-rules`、`/modernize-brief`、`/modernize-reimagine`、`/modernize-transform`、`/modernize-uplift`、`/modernize-harden`、`/modernize-status`，由六个工作流脚本驱动，配八个专用代理角色 |
+| 安全 | `security-reviewer` —— 审查变更，只报高置信度的可利用缺陷 |
 
 ## 安装
 
@@ -35,9 +48,9 @@
 - `plugin.json` 遵循 Agent Plugins v1 schema（`$schema` 指明版本）；`com.deepseek.harness` 命名空间在 `extensions` 里声明后，命名空间目录才会被读取——见[命名空间指南](docs/com-deepseek-harness-namespace.md)。
 - 技能位于 `skills/<name>/SKILL.md`——一层深度，与规范固定的发现规则一致。
 - 命名空间扩展面：`com.deepseek.harness/commands/*.md`、`com.deepseek.harness/agents/*.md`、`com.deepseek.harness/hooks/hooks.json`、`com.deepseek.harness/lsp.json`。
-- 移植内容以上游原文为基底；适配仅限机械映射——工具名、文件名、路径、厂商字样。
+- 移植内容以上游原文为基底；适配仅限机械映射——工具名、文件名、路径、前置字段、厂商字样。
 - 凭证绝不写成字面值；用户级 `~/.agents/mcp.json` 条目用 `${NAME}` 引用凭证。
 
 ## 许可
 
-[MIT](LICENSE)。`plugins/plugin-dev` 移植的内容以 Apache-2.0 分发——[LICENSE](plugins/plugin-dev/LICENSE) 随插件保留，内置的 `skill-creator` 技能保留[自己的副本](plugins/plugin-dev/skills/skill-creator/LICENSE.txt)。
+[MIT](LICENSE)。`plugins/plugin-dev` 与 `plugins/engineering` 移植的内容以 Apache-2.0 分发——两者都随插件保留该[许可](plugins/plugin-dev/LICENSE)，内置的 `skill-creator` 技能保留[自己的副本](plugins/plugin-dev/skills/skill-creator/LICENSE.txt)。

@@ -6,9 +6,9 @@ The repository is the authoring home for these plugins, and the market plugin sh
 
 ## Plugins
 
-### plugin-dev — authoring toolkit
+### `plugin-dev` — authoring toolkit
 
-Ported and adapted from the plugin-development toolkit of the reference ecosystem, with the skill creator and eval suites fused in.
+Ported and adapted from the plugin-development toolkit of the reference ecosystem, with the skill creator and eval suites fused in. 8 skills, 1 command, 3 agent roles.
 
 | Surface | Assets |
 | --- | --- |
@@ -17,13 +17,26 @@ Ported and adapted from the plugin-development toolkit of the reference ecosyste
 | Commands | `/create-plugin` |
 | Agent roles | `agent-creator`, `plugin-validator`, `skill-reviewer` |
 
-### toolkit — built-in toolset
+### `toolkit` — built-in toolset
+
+Everyday capabilities for a project session. 7 skills, 5 commands, 2 agent roles.
 
 | Surface | Assets |
 | --- | --- |
-| Skills | `init-project` (AGENTS.md / AGENTS.local.md setup), `explore` (read-only codebase exploration), `verify` (runtime verification), `simplify` (review and cleanup, delegating the fix pass to the code-simplifier agent), `insight` (session insight reports driven by the dsh-session-insights pipeline) |
-| Commands | `/init`, `/explore`, `/verify`, `/code-reviewer` |
-| Agent roles | `code-reviewer` (guidelines, bugs, quality — confidence-scored findings), `code-simplifier` (behavior-preserving refinement) |
+| Skills | `init-project`, `explore`, `verify`, `simplify`, `insight`, `agents-md-audit` (audit and improve AGENTS.md against quality criteria), `automation-recommender` (read a codebase and recommend the hooks, skills, agents and MCP servers it needs) |
+| Commands | `/init`, `/explore`, `/verify`, `/code-reviewer`, `/revise-agents-md` |
+| Agent roles | `code-reviewer`, `code-simplifier` |
+
+### `engineering` — engineering workflows
+
+Workflows for building and modernizing systems. 2 skills, 11 commands, 12 agent roles, plus the workflow scripts they drive.
+
+| Surface | Assets |
+| --- | --- |
+| Skills | `playground` (self-contained interactive HTML explorers), `frontend-design` (visual design direction) |
+| Feature development | `/feature-dev` with the `code-explorer`, `code-architect` and `code-reviewer` agent roles |
+| Legacy modernization | `/modernize-preflight`, `/modernize-assess`, `/modernize-map`, `/modernize-extract-rules`, `/modernize-brief`, `/modernize-reimagine`, `/modernize-transform`, `/modernize-uplift`, `/modernize-harden`, `/modernize-status`, driven by six workflow scripts, with eight specialized agent roles |
+| Security | `security-reviewer` — reviews a diff for exploitable weaknesses and reports only high-confidence findings |
 
 ## Installing
 
@@ -35,9 +48,9 @@ Installing [dsh-agent-plugins-market](https://github.com/Sivan757/dsh-agent-plug
 - `plugin.json` follows the Agent Plugins v1 schema (`$schema` names the release); the `com.deepseek.harness` namespace is declared in `extensions` and only then is the namespace directory read — see [the namespace guide](docs/com-deepseek-harness-namespace.md).
 - Skills live at `skills/<name>/SKILL.md` — one level deep, exactly as the specification fixes discovery.
 - Namespaced extension surfaces: `com.deepseek.harness/commands/*.md`, `com.deepseek.harness/agents/*.md`, `com.deepseek.harness/hooks/hooks.json`, `com.deepseek.harness/lsp.json`.
-- Ported content keeps its source text as the base; adaptation is mechanical only — tool names, file names, paths, and vendor wording.
+- Ported content keeps its source text as the base; adaptation is mechanical only — tool names, file names, paths, frontmatter keys, and vendor wording.
 - Credentials are never written as literal values; user-owned `~/.agents/mcp.json` entries reference credentials as `${NAME}`.
 
 ## License
 
-[MIT](LICENSE). `plugins/plugin-dev` ports content distributed under the Apache-2.0 license — its [LICENSE](plugins/plugin-dev/LICENSE) travels with the plugin, and the bundled `skill-creator` skill keeps [its own copy](plugins/plugin-dev/skills/skill-creator/LICENSE.txt).
+[MIT](LICENSE). `plugins/plugin-dev` and `plugins/engineering` port content distributed under the Apache-2.0 license — each carries that [license](plugins/plugin-dev/LICENSE) with the plugin, and the bundled `skill-creator` skill keeps [its own copy](plugins/plugin-dev/skills/skill-creator/LICENSE.txt).
