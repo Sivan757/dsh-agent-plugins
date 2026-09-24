@@ -46,6 +46,7 @@ Port only content whose license permits redistribution and use here. The plugins
 
 - `plugin-dev` and `engineering` each carry the Apache-2.0 license of the content they port; do not fold it into the repository MIT license.
 - The bundled `skill-creator` skill keeps its own license copy.
+- `toolkit`'s `insight` skill vendors MIT-licensed analysis and report code into `skills/insight/engine/` and `skills/insight/assets/`, and reads session logs through the host's MIT-licensed `@deepseek-ai/dsh-session-query` and persistence packages at run time. Keep its `LICENSE` attribution with the vendored files; when the upstream project publishes a new release, re-check the engine it replaces.
 
 ## Validation
 

@@ -23,7 +23,7 @@
 
 | 面 | 资产 |
 | --- | --- |
-| 技能 | `init`、`explore`、`verify`、`simplify`、`insight`、`agents-md-audit`（按质量标准审计并改进 AGENTS.md）、`automation-recommender`（读代码库，推荐它需要的 hooks、技能、代理与 MCP 服务器） |
+| 技能 | `init`、`explore`、`verify`、`simplify`、`insight`（本地回顾已记录的会话：自包含的 HTML 仪表盘与 JSON 报告，离线、无需额外安装）、`agents-md-audit`（按质量标准审计并改进 AGENTS.md）、`automation-recommender`（读代码库，推荐它需要的 hooks、技能、代理与 MCP 服务器） |
 | 命令 | `/code-reviewer`、`/revise-agents-md` |
 | 代理角色 | `code-reviewer`、`code-simplifier` |
 

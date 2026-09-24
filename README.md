@@ -23,7 +23,7 @@ Everyday capabilities for a project session. 7 skills, 5 commands, 2 agent roles
 
 | Surface | Assets |
 | --- | --- |
-| Skills | `init`, `explore`, `verify`, `simplify`, `insight`, `agents-md-audit` (audit and improve AGENTS.md against quality criteria), `automation-recommender` (read a codebase and recommend the hooks, skills, agents and MCP servers it needs) |
+| Skills | `init`, `explore`, `verify`, `simplify`, `insight` (local review of recorded sessions: a self-contained HTML dashboard and JSON report, offline and self-sufficient), `agents-md-audit` (audit and improve AGENTS.md against quality criteria), `automation-recommender` (read a codebase and recommend the hooks, skills, agents and MCP servers it needs) |
 | Commands | `/code-reviewer`, `/revise-agents-md` |
 | Agent roles | `code-reviewer`, `code-simplifier` |
 
