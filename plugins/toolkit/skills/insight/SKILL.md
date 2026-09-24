@@ -20,13 +20,24 @@ The engine ships with this skill and runs on Node alone; Python is not required.
 4. Explain the split before you start: the deterministic report is local and offline; the semantic stage sends bounded sanitized evidence to the currently configured model provider.
 5. Reports stay outside `$DSH_HOME/sessions`. Token totals are deduplicated per `(turn, step)`, and `outputTokens` already includes `reasoningTokens` — never add reasoning twice.
 
-## Running it
+## Deciding what to analyze
+
+This skill takes no arguments. The request arrives as ordinary language — "how have I been working this month", "why did last week feel slow", "look at the payments repo" — and you turn it into a scope. Decide, then say which scope you chose and why, before the report appears.
+
+- **Window** — default to the last 30 days. If the request names a period, use it: "this week" is 7 days, "the last quarter" is 90, "since I started this project" is a judgement you state out loud.
+- **Project** — when the request names a repository, a product or a path, scope to it with `--project` rather than reporting the whole machine and asking the reader to find themselves in it.
+- **Privacy** — default `redacted`. Choose `metrics` when the user wants counts only or asks that no text leave the machine, or when the semantic stage is not wanted. Choose `local` only when the user has said the destination and provider are trusted; never select it on your own initiative.
+- **When the request is genuinely ambiguous** — it could mean one project or the whole machine, or a period that changes the conclusion — ask with `ask_user_question` rather than guessing; otherwise decide and proceed.
+
+## Running the engine
+
+The commands below are the engine's interface, not the skill's parameters. Use them as written and substitute only what this run needs.
 
 ```
 node <skill-dir>/scripts/insight.mjs report [--days N] [--project PATH] [--privacy MODE]
     [--analysis-privacy MODE] [--analysis-depth DEPTH] [--locale L] [--format html|json]
     [--output PATH] [--open]
-node <skill-dir>/scripts/insight.mjs semantic prepare [same filters] [--resume]
+node <skill-dir>/scripts/insight.mjs semantic prepare [the same scope options] [--resume]
 node <skill-dir>/scripts/insight.mjs semantic get-batch --workdir DIR --batch ID
 node <skill-dir>/scripts/insight.mjs semantic submit-batch --workdir DIR --batch ID --payload FILE
 node <skill-dir>/scripts/insight.mjs semantic prepare-aggregate --workdir DIR
@@ -35,7 +46,7 @@ node <skill-dir>/scripts/insight.mjs semantic finalize --workdir DIR [--fallback
 node <skill-dir>/scripts/insight.mjs semantic cleanup --workdir DIR [--confirm]
 ```
 
-Filters: `--days` is a positive integer defaulting to 30; `--project` is an absolute path and keeps that project and its subdirectories; `--privacy` and `--analysis-privacy` are `redacted` (default), `metrics`, or `local`; `--analysis-depth` is `conversation` or `evidence`; `--locale` is `zh-CN` (default) or `en`. Selection is bounded — the engine refuses a selection beyond its session and byte ceilings and tells you to narrow `--days` or `--project` rather than truncating silently. On a large history a window that is too wide is read until the ceiling is crossed, so the refusal itself can take minutes; when a run reports that, retry with a shorter `--days` or a `--project` scope instead of assuming the command hung.
+`--days` is a positive integer; `--project` is an absolute path and keeps that project and its subdirectories; `--privacy` and `--analysis-privacy` are `redacted`, `metrics`, or `local`; `--analysis-depth` is `conversation` or `evidence`; `--locale` is `zh-CN` or `en`. Selection is bounded — the engine refuses a selection beyond its session and byte ceilings and tells you to narrow `--days` or `--project` rather than truncating silently. On a large history a window that is too wide is read until the ceiling is crossed, so the refusal itself can take minutes; when a run reports that, retry with a shorter window or a project scope instead of assuming the command hung. Say so if you had to narrow: the reader should know the report covers less than they asked for.
 
 ## Deterministic report
 
