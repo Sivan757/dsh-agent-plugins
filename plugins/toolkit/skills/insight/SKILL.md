@@ -46,7 +46,7 @@ node <skill-dir>/scripts/insight.mjs semantic finalize --workdir DIR [--fallback
 node <skill-dir>/scripts/insight.mjs semantic cleanup --workdir DIR [--confirm]
 ```
 
-`--days` is a positive integer; `--project` is an absolute path and keeps that project and its subdirectories; `--privacy` and `--analysis-privacy` are `redacted`, `metrics`, or `local`; `--analysis-depth` is `conversation` or `evidence`; `--locale` is `zh-CN` or `en`. Selection is bounded — the engine refuses a selection beyond its session and byte ceilings and tells you to narrow `--days` or `--project` rather than truncating silently. On a large history a window that is too wide is read until the ceiling is crossed, so the refusal itself can take minutes; when a run reports that, retry with a shorter window or a project scope instead of assuming the command hung. Say so if you had to narrow: the reader should know the report covers less than they asked for.
+`--days` is a positive integer; `--project` is an absolute path and keeps that project and its subdirectories; `--privacy` and `--analysis-privacy` are `redacted`, `metrics`, or `local`; `--analysis-depth` is `conversation` or `evidence`; `--locale` is `zh-CN` or `en`. Selection is bounded: the engine analyzes the newest sessions that fit its session and byte ceilings, then stops and reports the coverage it reached instead of truncating the numbers silently. On a large history a wide window can therefore cover a small fraction of it — a 30-day window on a busy machine may analyze only the newest few percent. The CLI prints how many sessions were in scope, how many were analyzed and which ceiling stopped it, and `report.json` carries the same under `coverage.selection`. Always pass that on, and prefer a `--project` scope when the request is about one codebase: a reader who is not told the report covers a fraction of the window will read the numbers as if they were complete.
 
 ## Deterministic report
 
@@ -54,7 +54,7 @@ Run `report`. It prints the run directory and the two artifact paths. Read `repo
 
 ## Semantic report
 
-1. `semantic prepare` writes the batches and prints the workdir and the batch ids.
+1. `semantic prepare` writes the batches and prints the workdir and the batch ids. Families analyzed in an earlier run are answered from a private cache inside `$DSH_HOME`, omitted from the batches, and counted under `cache_hits`, so repeat runs are cheaper — the batch says how many were answered that way. The cache is keyed to the evidence and to the privacy and depth in force, so a run never reuses a judgment made under different settings.
 2. For each batch id, in order: read it with `get-batch`; classify the evidence into one facet object per task following the `output_contract` it returns (that contract is authoritative for field names, enum values and evidence reference format); write the JSON to a file; submit it with `submit-batch`. Do not spawn another model process and do not delegate batches to subagents — you are the model for this stage.
 3. If a batch is rejected, repair it once and resubmit. If it fails again, continue to the end and use `--fallback` at finalize so the deterministic report still renders and the degradation is recorded.
 4. After every batch passes, run `prepare-aggregate`, write the narrative against the returned contract, and `submit-aggregate`.
@@ -63,13 +63,17 @@ Run `report`. It prints the run directory and the two artifact paths. Read `repo
 
 ## Reading the evidence
 
-Whatever the contract's field list, these are the judgments that carry the report:
+The batch contract is authoritative for field names and enum values; these are the judgments behind it.
 
 - **Task family** — group by what the user was trying to accomplish, not by which files were touched. Subagent work belongs to the session that spawned it.
-- **Instruction handling** — did the work follow what was asked, partially, or not at all; base this on the recorded requests and corrections, not on the agent's own summary.
-- **Tool execution** — failures, retries, and calls that returned nothing useful are the raw material. A tool that failed and was retried successfully is not a failure of the session; a tool that failed silently is.
-- **Verification quality** — was the change ever observed working: a command run, a request sent, a page driven. A passing test suite is not observation.
-- **Friction** — name the concrete cause visible in the evidence: a misunderstood request, the right goal with the wrong approach, code that did not work, an action the user rejected, a change broader than asked.
-- **Strengths** — what ran clean and why, with the same evidence standard.
-- **Spend** — read token usage in and out, cache reads against fresh input, how much work ran in subagents, and the single most expensive request, and attribute each to the task family it belongs to. Lead with spend when one workflow takes a disproportionate share, when cache reads are far below what the work allows, or when one request is a noticeable slice of the window. Every spend figure names the sessions behind it.
+- **`underlying_goal`** — what the user fundamentally wanted, in their terms rather than the agent's.
+- **`goal_categories`** — count only what the user explicitly asked for. Exploration the agent decided on its own is not a goal, and neither is work nobody requested. A session that was only setup or warmup is `warmup_minimal`.
+- **`outcome` and `brief_summary`** — did the user get what they asked for, read from the transcript rather than from the agent's closing summary. Use `unclear_from_transcript` when the evidence genuinely does not settle it; that is an answer, not a failure to answer.
+- **`assistant_helpfulness`** — how much the agent contributed to the outcome, judged on the same evidence.
+- **`session_type`** — one task, several, iterative refinement, exploration, or a quick question. This is what makes the aggregate's workflow picture legible, so decide it from the shape of the requests.
+- **`friction_counts` and `friction_detail`** — the concrete cause visible in the evidence: a misunderstood request, the right goal with the wrong approach, code that did not work, an action the user rejected, a change broader than asked, a tool that failed. A tool that failed and was retried successfully is not friction; a tool that failed silently is.
+- **`primary_success`** — the one thing that went well, when something did. When nothing did, say `none` rather than reaching for the nearest label.
+- **`user_satisfaction_counts`** — base this only on explicit user signals: praise, corrections, complaints, abandonment. Silence is not satisfaction.
+- **`evidence_refs`** — at least one, naming the evidence the judgment rests on. A facet that cannot point at its evidence does not belong in the report.
+- **Spend** — the facet schema does not carry cost, so read it from the deterministic report: token usage in and out, cache reads against fresh input, how much work ran in subagents, and the single most expensive request, attributed to the task family it belongs to. Lead with spend when one workflow takes a disproportionate share, when cache reads are far below what the work allows, or when one request is a noticeable slice of the window. Every spend figure names the sessions behind it.
 - **Recommendations** — one change per friction pattern, phrased as something the user can do in a session. Instructions the user repeated across multiple sessions are the strongest candidates: they should not have to repeat themselves.

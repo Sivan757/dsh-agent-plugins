@@ -1025,6 +1025,19 @@ export function buildReport(snapshots, input = {}) {
     heuristic_role_rollouts: 0,
     unknown_system_rollouts: 0,
   }
+  // The reader caps a wide selection newest-first and reports how much of the
+  // scope it read; carry that disclosure into the report so a truncated window
+  // can never read as complete coverage.
+  const bounds = object(opts.selection) ? opts.selection : null
+  coverage.selection = {
+    sessions_in_scope: bounds ? bounds.in_scope : snapshots.length,
+    sessions_analyzed: bounds ? bounds.read : snapshots.length,
+    sessions_not_analyzed: bounds ? bounds.not_analyzed : 0,
+    snapshot_bytes: bounds ? bounds.snapshot_bytes : null,
+    bounds: bounds ? bounds.bounds : null,
+    truncated: bounds ? bounds.truncated === true : false,
+    stopped_by: bounds ? bounds.stopped_by ?? null : null,
+  }
   const sessions = snapshots
       .map((s) => parseSnapshot(s, opts, coverage))
       .filter(Boolean),

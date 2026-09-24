@@ -266,8 +266,10 @@ export function discoverSessionLogs(sessionsRoot, limits) {
  * The window and project filters are applied twice on purpose: once on the
  * lightweight header so unreadable logs outside the selection are never opened,
  * and again by the analyzer, which owns the same contract. The session and byte
- * ceilings are refusals, not truncation: a selection that exceeds either one
- * reports how far it got and asks for a narrower window or project.
+ * ceilings cap the selection instead of refusing it: candidates are taken
+ * newest-first until the next one would cross either ceiling, then the read
+ * stops and the selection reports the truncation, the counts behind it and the
+ * bound that stopped it.
  * @param {{now: number, days: number, project?: string, concurrency?: number}} options
  * @returns {Promise<{snapshots: object[], selection: object}>}
  */
@@ -291,7 +293,9 @@ export async function collectSnapshots(options) {
     until: options.now,
     discovered: discovered.coverage.logs_selected,
     considered: 0,
+    in_scope: 0,
     read: 0,
+    not_analyzed: 0,
     skipped_outside_window: 0,
     skipped_project: 0,
     skipped_unreadable: 0,
@@ -301,6 +305,7 @@ export async function collectSnapshots(options) {
     bounds: { max_sessions: MAX_SESSIONS, max_snapshot_bytes: MAX_SNAPSHOT_BYTES },
     snapshot_bytes: 0,
     truncated: false,
+    stopped_by: null,
   }
   const candidates = []
   for (const entry of discovered.entries) {
@@ -324,15 +329,17 @@ export async function collectSnapshots(options) {
     candidates.push({ entry, header })
   }
   candidates.sort((a, b) => b.header.createdAt - a.header.createdAt || a.entry.id.localeCompare(b.entry.id))
+  selection.in_scope = candidates.length
   const snapshots = []
   let bytes = 0
+  let stoppedBy = null
   for (const candidate of candidates) {
-    if (snapshots.length >= MAX_SESSIONS)
-      throw new Error(
-        `session selection exceeds ${MAX_SESSIONS} sessions: ` +
-          `${snapshots.length} read, ${candidates.length} in the window, ` +
-          `${(bytes / 1048576).toFixed(1)} MiB of snapshots; narrow --days or filter --project`,
-      )
+    // The candidate list is already newest-first, so the first ceiling the next
+    // session would cross ends the selection instead of failing the run.
+    if (snapshots.length >= MAX_SESSIONS) {
+      stoppedBy = 'max_sessions'
+      break
+    }
     let cold
     try {
       cold = await host.readColdSessionLog(persistence, candidate.entry.id)
@@ -354,18 +361,18 @@ export async function collectSnapshots(options) {
       events: cold.events,
     }
     const size = Buffer.byteLength(JSON.stringify(snapshot))
-    if (bytes + size > MAX_SNAPSHOT_BYTES)
-      throw new Error(
-        `session selection exceeds ${MAX_SNAPSHOT_BYTES} serialized snapshot bytes: ` +
-          `${snapshots.length} read (${(bytes / 1048576).toFixed(1)} MiB), ` +
-          `${candidates.length} sessions in the window (${options.days} days); ` +
-          `narrow --days or filter --project`,
-      )
+    if (bytes + size > MAX_SNAPSHOT_BYTES) {
+      stoppedBy = 'max_snapshot_bytes'
+      break
+    }
     bytes += size
     snapshots.push(snapshot)
   }
   selection.read = snapshots.length
   selection.snapshot_bytes = bytes
+  selection.not_analyzed = candidates.length - snapshots.length
+  selection.truncated = stoppedBy !== null
+  selection.stopped_by = stoppedBy
   return { snapshots, selection }
 }
 

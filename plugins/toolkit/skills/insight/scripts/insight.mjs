@@ -75,6 +75,14 @@ The default privacy of redacted keeps structure and short excerpts while
 scrubbing credential-like values. metrics omits all text and skips the semantic
 stage. local keeps local content and is an explicit opt-in.
 
+A selection wider than the session or snapshot-byte bound is capped newest-first.
+The run then completes and states in its coverage how many sessions in scope were
+analyzed and how many were not.
+
+Validated facets are cached per task family under \$DSH_HOME/insights/cache/facets
+and reused only while the evidence fingerprint, analysis privacy, analysis depth
+and contract version are unchanged.
+
 Session logs are read in place under \$DSH_HOME/sessions and are never modified.
 Run directories live under \$DSH_HOME/insights/runs and are removed only by
 'semantic cleanup --confirm'.
@@ -170,6 +178,26 @@ async function selectSnapshots(options) {
     `insight: ${selection.read} sessions selected (${formatBytes(selection.snapshot_bytes)})` +
       `${selection.skipped_unreadable > 0 ? `, ${selection.skipped_unreadable} unreadable` : ''}\n`,
   )
+  // Plain-language coverage line: a capped selection must never read as complete.
+  if (selection.truncated) {
+    const percent =
+      selection.in_scope > 0
+        ? Math.round((selection.read / selection.in_scope) * 100)
+        : 100
+    const bound =
+      selection.stopped_by === 'max_sessions'
+        ? `${selection.bounds.max_sessions}-session`
+        : `${formatBytes(selection.bounds.max_snapshot_bytes)} snapshot-byte`
+    process.stderr.write(
+      `insight: coverage: this report covers the newest ${selection.read} of ${selection.in_scope} sessions in scope (${percent}%); ` +
+        `${selection.not_analyzed} sessions in scope were not analyzed because the selection reached the ${bound} bound. ` +
+        `Narrow --days or filter --project for a fuller window.\n`,
+    )
+  } else {
+    process.stderr.write(
+      `insight: coverage: all ${selection.read} sessions in scope were analyzed\n`,
+    )
+  }
   return { snapshots, selection }
 }
 
@@ -177,7 +205,9 @@ async function selectSnapshots(options) {
 async function buildRun(values) {
   const options = { ...normalizeOptions(values), now: Date.now() }
   const { snapshots, selection } = await selectSnapshots(options)
-  const built = await analyze(snapshots, options)
+  // The selection bounds travel into the report so a truncated window is
+  // visible in report.json and not only on stderr.
+  const built = await analyze(snapshots, { ...options, selection })
   const store = new Store()
   const run = store.create()
   return { store, run, built, selection }
@@ -296,7 +326,7 @@ async function commandPrepare(args) {
         const manifest = runs.read(workdir, 'manifest.json')
         if (
           manifest.semantic_schema_version !== '1.0.0' ||
-          manifest.native_version !== 1 ||
+          manifest.native_version !== 2 ||
           !Array.isArray(manifest.batch_ids)
         )
           continue
@@ -367,6 +397,7 @@ function commandPrepareAggregate(args) {
     workdir: run,
     sections: value.output_contract.required_sections,
     facets: value.facets.length,
+    facet_summary: value.facet_summary,
     evidence: value.evidence.length,
     selection: value.selection,
   })

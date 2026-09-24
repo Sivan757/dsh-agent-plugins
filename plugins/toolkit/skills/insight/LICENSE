@@ -32,6 +32,10 @@ remain under its MIT license:
 - Copyright (c) 2026 Gerui Lv
 - License: MIT
 
+`engine/reader.js` (host session-log discovery and snapshot selection) and
+`engine/facet-cache.js` (the cross-run facet cache) are maintained by this
+skill, not vendored, and carry this license.
+
 The report schema in `engine/report.schema.json` is the upstream report schema
 v1 with this skill's product and schema identifiers:
 
@@ -41,6 +45,13 @@ Adaptations made for this skill: the report's product and schema identifiers,
 the run-directory marker product id, the dashboard template path, the
 branding strings in the dashboard template, and the meta-analysis detection
 patterns that recognize this skill. Analysis behaviour is unchanged.
+
+The closed facet vocabulary in `engine/rules.js` (the goal categories, outcome,
+satisfaction, helpfulness, session type, friction and success sets, together
+with their wording) is shared with Claude Code's `/insights` facet schema,
+Copyright (c) Anthropic PBC, used here under the MIT license of the
+claude-code source distribution. Vendor words in that vocabulary are renamed to
+this runtime's assistant terms in shipped code.
 
 ## Host libraries
 
