@@ -12,7 +12,7 @@ import { spawn } from 'node:child_process'
 import { readFileSync, copyFileSync, mkdirSync, statSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { parseArgs } from 'node:util'
-import { analyze, collectSnapshots, dshHome } from '../engine/reader.js'
+import { analyze, collectSnapshots, dshHome, EmptyProjectScopeError } from '../engine/reader.js'
 import { MAX_JSON_BYTES, Store } from '../engine/storage.js'
 import {
   finalize,
@@ -138,13 +138,17 @@ function normalizeOptions(values) {
   let project
   if (values.project !== undefined) {
     project = resolve(values.project)
-    let stat
+    // A path that no longer exists is still a project scope: sessions that used
+    // it can outlive the directory. Selection decides the outcome, and a scope
+    // that matches nothing is a distinct non-zero exit, not a usage error. A
+    // path that exists but is not a directory stays a usage error.
+    let stat = null
     try {
       stat = statSync(project)
     } catch {
-      fail(`--project does not exist: ${project}`)
+      stat = null
     }
-    if (!stat.isDirectory()) fail(`--project is not a directory: ${project}`)
+    if (stat !== null && !stat.isDirectory()) fail(`--project is not a directory: ${project}`)
   }
   return { days, project, privacy, analysis_privacy: analysisPrivacy, analysis_depth: analysisDepth, locale }
 }
@@ -479,5 +483,11 @@ async function main() {
 }
 
 main().catch((error) => {
+  // A --project scope that matched nothing is its own outcome: a plain message
+  // and exit 3, before any run directory or report exists.
+  if (error instanceof EmptyProjectScopeError) {
+    process.stderr.write(`insight: ${error.message}\n`)
+    process.exit(3)
+  }
   fail(describe(error))
 })

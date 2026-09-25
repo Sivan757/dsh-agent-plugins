@@ -4,7 +4,9 @@
 // expects. It enumerates persisted session logs, resolves the canonical
 // generation of each logical session, reads snapshots through the installed
 // host persistence and query libraries, and applies the window, project and
-// hard selection bounds before the analyzer ever sees a snapshot.
+// hard selection bounds before the analyzer ever sees a snapshot. A project
+// scope is decided by the recorded `cwd` in each session header, never by the
+// on-disk project directory name, which is a lossy encoding of the path.
 //
 // Session logs are read in place. Nothing here writes below the sessions root.
 import { existsSync, readdirSync, statSync } from 'node:fs'
@@ -17,6 +19,27 @@ import { Worker } from 'node:worker_threads'
 export const MAX_SESSIONS = 2000
 /** Hard bound on the serialized snapshot bytes one selection may carry. */
 export const MAX_SNAPSHOT_BYTES = 64 * 1024 * 1024
+
+/**
+ * Raised when a `--project` scope matched no session in the window.
+ *
+ * An empty retrospective that exits 0 is the worst failure mode this engine
+ * has, so a scope with no sessions is a distinct non-zero outcome: the caller
+ * prints this message and never writes a report.
+ */
+export class EmptyProjectScopeError extends Error {
+  constructor(project, days, inWindow) {
+    super(
+      `no session used project ${project} within the last ${days} days ` +
+        `(${inWindow} sessions were examined in that window); no report was written`,
+    )
+    this.name = 'EmptyProjectScopeError'
+    this.project = project
+    this.days = days
+    this.sessions_in_window = inWindow
+  }
+}
+
 /** Canonical session log grammar: `session.jsonl` is v0, `session.vN.jsonl` is vN. */
 const LOG_VERSION_RE = /^session(?:\.v([1-9][0-9]*))?\.jsonl$/
 const COMPRESSIONS = ['none', 'zstd']
@@ -126,13 +149,6 @@ function normalizeProject(value) {
   return /^[A-Za-z]:\//.test(path) ? path.toLowerCase() : path
 }
 
-/** Decode one `/Users/name/...` style workspace directory name. */
-function decodeWorkspaceKey(key) {
-  const text = String(key)
-  const rest = text.replace(/^--/, '').replace(/--$/, '')
-  return rest.replace(/-/g, '/').replace(/^\/?(?=[A-Za-z]:)/, '/')
-}
-
 function projectMatches(cwd, project) {
   const actual = normalizeProject(cwd)
   const requested = normalizeProject(project)
@@ -147,8 +163,10 @@ function projectMatches(cwd, project) {
  * resolver. Inside a session directory the numerically highest canonical
  * generation of the encoded suffix wins; a directory holding both the plain and
  * the compressed encoding is ambiguous and is reported rather than guessed at.
+ * The directory name is never decoded back into a path: a project scope needs
+ * the recorded header `cwd`, which `collectSnapshots` reads before filtering.
  * @param {string} sessionsRoot - the harness sessions root.
- * @param {{project?: string, formatVersion: number}} limits
+ * @param {{formatVersion: number}} limits
  * @returns {{entries: object[], coverage: object, skipped: object[]}}
  */
 export function discoverSessionLogs(sessionsRoot, limits) {
@@ -160,6 +178,9 @@ export function discoverSessionLogs(sessionsRoot, limits) {
     skipped_encoding_mismatch: 0,
     skipped_newer_generation: 0,
     skipped_flat_artifact: 0,
+    // Discovery never drops a project directory: the project filter needs the
+    // recorded header `cwd`, so it runs later, in collectSnapshots, and its own
+    // counter lives on the selection.
     skipped_project: 0,
     unreadable_dirs: 0,
     generation_diagnostics: {
@@ -183,10 +204,6 @@ export function discoverSessionLogs(sessionsRoot, limits) {
     return { entries, coverage, skipped }
   }
   for (const project of projects) {
-    if (limits.project !== undefined && !projectMatches(decodeWorkspaceKey(project), limits.project)) {
-      coverage.skipped_project++
-      continue
-    }
     coverage.project_dirs++
     const projectPath = join(sessionsRoot, project)
     let sessionDirs
@@ -226,7 +243,7 @@ export function discoverSessionLogs(sessionsRoot, limits) {
         coverage.skipped_encoding_mismatch++
         skipped.push({
           session_id: sessionDir.name,
-          project: decodeWorkspaceKey(project),
+          workspace_dir: project,
           reason: 'encoding_mismatch',
         })
         continue
@@ -239,7 +256,7 @@ export function discoverSessionLogs(sessionsRoot, limits) {
         coverage.skipped_newer_generation++
         skipped.push({
           session_id: sessionDir.name,
-          project: decodeWorkspaceKey(project),
+          workspace_dir: project,
           reason: `generation_v${selected.version}_newer_than_v${limits.formatVersion}`,
         })
         continue
@@ -250,7 +267,7 @@ export function discoverSessionLogs(sessionsRoot, limits) {
       coverage.logs_selected++
       entries.push({
         id: sessionDir.name,
-        project: decodeWorkspaceKey(project),
+        workspace_dir: project,
         path: join(directory, selected.name),
         version: selected.version,
       })
@@ -263,13 +280,19 @@ export function discoverSessionLogs(sessionsRoot, limits) {
 /**
  * Collect snapshots for one selection.
  *
- * The window and project filters are applied twice on purpose: once on the
- * lightweight header so unreadable logs outside the selection are never opened,
- * and again by the analyzer, which owns the same contract. The session and byte
- * ceilings cap the selection instead of refusing it: candidates are taken
- * newest-first until the next one would cross either ceiling, then the read
- * stops and the selection reports the truncation, the counts behind it and the
- * bound that stopped it.
+ * A project scope is decided by the recorded `cwd` of each session header, the
+ * authoritative value, and never by the on-disk project directory name. The
+ * window filter runs first and the project filter second, so a project scope
+ * still reports how many sessions the window examined. The window and project
+ * filters are applied twice on purpose: once on the lightweight header so
+ * unreadable logs outside the selection are never opened, and again by the
+ * analyzer, which owns the same contract. The session and byte ceilings cap the
+ * selection instead of refusing it: candidates are taken newest-first until the
+ * next one would cross either ceiling, then the read stops and the selection
+ * reports the truncation, the counts behind it and the bound that stopped it.
+ *
+ * A project scope that matches nothing raises `EmptyProjectScopeError` instead
+ * of returning an empty selection, so an empty retrospective can never exit 0.
  * @param {{now: number, days: number, project?: string, concurrency?: number}} options
  * @returns {Promise<{snapshots: object[], selection: object}>}
  */
@@ -281,10 +304,11 @@ export async function collectSnapshots(options) {
   const host = await loadHost()
   const context = new host.Context()
   const persistence = new host.JsonlSessionPersistence(context, { root: sessionsRoot })
-  const discovered = discoverSessionLogs(sessionsRoot, {
-    project: options.project,
-    formatVersion: host.formatVersion,
-  })
+  const discovered = discoverSessionLogs(sessionsRoot, { formatVersion: host.formatVersion })
+  // The stored headers carry the recorded `cwd`, `createdAt` and `id`. Read the
+  // whole listing once, up front, so every filter below is decided by the same
+  // authoritative records the harness itself persists.
+  const headers = await sessionHeaders(persistence)
   const cutoff = options.now - options.days * 86400000
   const selection = {
     sessions_root: sessionsRoot,
@@ -293,6 +317,7 @@ export async function collectSnapshots(options) {
     until: options.now,
     discovered: discovered.coverage.logs_selected,
     considered: 0,
+    in_window: 0,
     in_scope: 0,
     read: 0,
     not_analyzed: 0,
@@ -315,13 +340,20 @@ export async function collectSnapshots(options) {
       selection.skipped_unreadable_sessions.push({ session_id: entry.id, reason: 'log disappeared during the scan' })
       continue
     }
-    const header = await readHeader(persistence, entry.id)
-    if (header === null) continue
+    const header = headers.get(entry.id) ?? (await readHeader(persistence, entry.id))
+    if (header === null || header === undefined) {
+      selection.skipped_unreadable++
+      selection.skipped_unreadable_sessions.push({ session_id: entry.id, reason: 'session header is unreadable' })
+      continue
+    }
     selection.considered++
+    // Window first, project second: a project scope with no sessions in the
+    // window is a distinct empty-scope outcome, not a silent empty report.
     if (!Number.isFinite(header.createdAt) || header.createdAt < cutoff || header.createdAt > options.now) {
       selection.skipped_outside_window++
       continue
     }
+    selection.in_window++
     if (options.project !== undefined && !projectMatches(String(header.cwd || ''), options.project)) {
       selection.skipped_project++
       continue
@@ -330,6 +362,8 @@ export async function collectSnapshots(options) {
   }
   candidates.sort((a, b) => b.header.createdAt - a.header.createdAt || a.entry.id.localeCompare(b.entry.id))
   selection.in_scope = candidates.length
+  if (options.project !== undefined && candidates.length === 0)
+    throw new EmptyProjectScopeError(options.project, options.days, selection.in_window)
   const snapshots = []
   let bytes = 0
   let stoppedBy = null
@@ -374,6 +408,25 @@ export async function collectSnapshots(options) {
   selection.truncated = stoppedBy !== null
   selection.stopped_by = stoppedBy
   return { snapshots, selection }
+}
+
+/**
+ * Read the authoritative header listing the host persistence exposes.
+ *
+ * `persistence.list()` returns one record per stored session with the recorded
+ * `id`, `createdAt` and `cwd`, which is the same listing the harness uses to
+ * resolve sessions. It is read as a map so a project scope never consults a
+ * directory name. A listing that fails outright (a corrupt corpus) degrades to
+ * per-session `stat` headers in the caller instead of losing the whole run.
+ */
+async function sessionHeaders(persistence) {
+  const headers = new Map()
+  try {
+    for (const snapshot of await persistence.list()) headers.set(snapshot.header.id, snapshot.header)
+  } catch {
+    /* fall back to readHeader(persistence, id) per discovered session */
+  }
+  return headers
 }
 
 /** Read one session header through the host backend without reading its log body. */

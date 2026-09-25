@@ -364,7 +364,7 @@ export default {
     "flags": ""
   },
   "CORRECTION_RE": {
-    "source": "(?:\\b(?:no|not that|instead|wrong|stop|actually|rather than|misunderstood)\\b|不要|不是这样|不对|错了|改为|重新|你误解|别这样)",
+    "source": "(?:\\b(?:no|not that|instead|wrong|stop|actually|rather than|misunderstood)\\b|不要|不是这样|不对|错了|改为|你误解|别这样)",
     "flags": "i"
   },
   "USER_ACCEPTANCE_RE": {

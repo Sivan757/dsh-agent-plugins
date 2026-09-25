@@ -1000,6 +1000,17 @@ export function buildReport(snapshots, input = {}) {
     now: Date.now(),
     ...input,
   }
+  // The reader caps a wide selection newest-first and reports how much of the
+  // scope it read; carry that disclosure into the report so a truncated window
+  // can never read as complete coverage. The reader's generation diagnostics
+  // (versioned, legacy, plaintext, coexisting logs) describe the same selection
+  // and travel with it under `coverage.selection`, the one coverage block.
+  const bounds = object(opts.selection) ? opts.selection : null
+  const generationDiagnostics =
+    object(bounds?.coverage?.generation_diagnostics) &&
+    Object.keys(bounds.coverage.generation_diagnostics).length > 0
+      ? { ...bounds.coverage.generation_diagnostics }
+      : null
   const coverage = {
     files_scanned: snapshots.length,
     sessions_analyzed: 0,
@@ -1018,17 +1029,12 @@ export function buildReport(snapshots, input = {}) {
       disabled: snapshots.length,
       write_errors: 0,
     },
-    generation_diagnostics: {},
     surface_replacements: 0,
     since: new Date(opts.now - opts.days * 86400000).toISOString(),
     until: new Date(opts.now).toISOString(),
     heuristic_role_rollouts: 0,
     unknown_system_rollouts: 0,
   }
-  // The reader caps a wide selection newest-first and reports how much of the
-  // scope it read; carry that disclosure into the report so a truncated window
-  // can never read as complete coverage.
-  const bounds = object(opts.selection) ? opts.selection : null
   coverage.selection = {
     sessions_in_scope: bounds ? bounds.in_scope : snapshots.length,
     sessions_analyzed: bounds ? bounds.read : snapshots.length,
@@ -1037,6 +1043,7 @@ export function buildReport(snapshots, input = {}) {
     bounds: bounds ? bounds.bounds : null,
     truncated: bounds ? bounds.truncated === true : false,
     stopped_by: bounds ? bounds.stopped_by ?? null : null,
+    ...(generationDiagnostics === null ? {} : { generation_diagnostics: generationDiagnostics }),
   }
   const sessions = snapshots
       .map((s) => parseSnapshot(s, opts, coverage))
